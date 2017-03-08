@@ -1,0 +1,574 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+		<!-- 产品视图  -->
+    	<record id="zt_product_tree" model="ir.ui.view">
+            <field name="name">zt.product.tree</field>
+            <field name="model">zt.product</field>
+            <field name="arch" type="xml">
+                <tree string="产品">
+                    <field name="type"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="po"/>
+                    <field name="qd"/>
+                    <field name="rd"/>
+                    <field name="acl"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="zt_product_form" model="ir.ui.view">
+            <field name="name">zt.product.form</field>
+            <field name="model">zt.product</field>
+            <field name="arch" type="xml">
+                <form string="产品">
+                	<sheet>
+						<div class="oe_title">
+							<h1 class="o_row">
+								<field name="name" placeholder="产品名称..."/>
+							</h1>
+							<div class="oe_button_box, oe_readonly" name="button_box" >
+								<button type="object" name="action_view_story" class="oe_stat_button"
+									icon="fa-truck" attrs="{'invisible':[('story_count','=',0)]}">
+									<field name="story_count" widget="statinfo" string="需求" help="需求（用户故事）"/>
+									<field name="story_ids" invisible="1"/>
+								</button>
+							</div>
+						</div>
+						<group>
+						  <group>
+							<field name="type"/>
+							<field name="code"/>
+						  </group>
+						   <group>
+								<field name="po"/>
+								<field name="qd"/>
+								<field name="rd"/>
+							</group>
+						</group>
+						<group>
+							<field name="acl" widget="radio"/>
+							<field name="whitelist" attrs="{'invisible': [('acl', 'in', ['open', 'private'])]}"
+						        widget="many2many_tags" string="访问白名单"/>
+							<field name ="desc"/>
+						</group>
+						<notebook>
+							<page string="模块" >
+								<field name="module_ids">
+									<tree editable="bottom">
+										<field name="name"/>
+										<field name="parent"/>
+										<field name="owner"/>
+									</tree>
+								</field>
+							</page>
+							<page string="需求">
+								<field name="story_ids">
+									<tree string="需求" editable="bottom">
+										<field name="name"/>
+										<field name="spec"/>
+										<field name="verify"/>
+										<field name="estimate"/>
+									</tree>
+								</field>
+							</page>
+							<page string="发布计划" >
+								<field name="plan_ids">
+									<tree editable="bottom">
+										<field name="name"/>
+										<field name="begin"/>
+										<field name="end"/>
+									</tree>
+								</field>
+							</page>
+							<page string="发布" >
+								<field name="release_ids">
+									<tree editable="bottom">
+										<field name="build_id"/>
+										<field name="name"/>
+										<field name="date"/>
+										<field name="status"/>
+									</tree>
+								</field>
+							</page>
+						</notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="message_ids" widget="mail_thread"/>
+                	</div>
+                </form>
+            </field>
+        </record>
+
+		 <record id="zt_product_search" model="ir.ui.view">
+            <field name="name">zt.product.search</field>
+            <field name="model">zt.product</field>
+            <field name="arch" type="xml">
+                <search string="产品">
+					<field name="type"/>
+					<field name="name"/>
+					<field name="code"/>
+					<field name="po"/>
+					<field name="qd"/>
+					<field name="rd"/>
+					<separator/>
+					<filter name="My Responsible" string="我负责的" domain="['|',('po','=', uid),('qd','=', uid)]"/>
+				</search>
+			</field>
+        </record>
+
+		<!-- module -->
+		<record id="zt_module_tree" model="ir.ui.view">
+			<field name="name">zt.module.tree</field>
+			<field name="model">zt.module</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="product_id" />
+					<field name="name"/>
+					<field name="parent"/>
+					<field name="owner"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="zt_module_form" model="ir.ui.view">
+			<field name="name">zt.module.form</field>
+			<field name="model">zt.module</field>
+			<field name="arch" type="xml">
+				<form>
+					<sheet>
+						<div class="oe_title">
+							<h1 class="o_row">
+								<field name="name" placeholder="模块名称..."/>
+							</h1>
+						</div>
+						<group col="4">
+							<field name="product_id" />
+							<field name="parent"/>
+							<field name="owner"/>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="zt_module_search" model="ir.ui.view">
+			<field name="name">zt.module.search</field>
+			<field name="model">zt.module</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="product_id" />
+					<field name="name"/>
+					<field name="parent"/>
+					<field name="owner"/>
+				</search>
+			</field>
+		</record>
+
+		<!--  需求 -->
+		<record id="zt_story_tree" model="ir.ui.view">
+            <field name="name">zt.story.tree</field>
+            <field name="model">zt.story</field>
+            <field name="arch" type="xml">
+                <tree string="需求">
+					<field name="id" />
+					<field name="pri"/>
+					<field name="name"/>
+					<field name="plan_id"/>
+					<field name="create_uid"  string="创建"/>
+					<field name="assigned_to_id"/>
+					<field name="estimate"/>
+					<field name="status"/>
+					<field name="stage"/>
+					<field name="task_count" string="T"/>
+					<field name="bug_count" string="B"/>
+					<field name="case_count" string="C"/>
+					<button name="action_open_wizard_form" string="关闭需求"
+                        type="object" attrs="{'invisible': [('status', 'in', ['closed'])]}"
+						context="{'action': 'close', 'name':'关闭需求'}"/>
+					<button class="oe_inline oe_stat_button" string="C"
+							name="action_case" type="object"  icon="fa-columns" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="zt_change_story_form" model="ir.ui.view">
+            <field name="name">zt.change.story.form</field>
+            <field name="model">zt.story</field>
+            <field name="arch" type="xml">
+                <form string="变更需求">
+					<group col="4" colspan="2">
+						<field name="reviewed_by_id" attrs="{'invisible': [('no_need_review', '=', True)]}"/>
+						<field name="no_need_review"/>
+					</group>
+                    <group>
+                        <field name="id" invisible="1"/>
+                        <field name="name"/>
+						<field name="spec" widget="html"/>
+						<field name="verify" widget="html"/>
+                        <field name="remarks" />
+                    </group>
+					<notebook>
+						<page string="受影响的bug">
+							<field name="bug_ids" readonly="1"/>
+						</page>
+						<page string="受影响的测试剧本" readonly="1">
+							<field name="case_ids"/>
+						</page>
+					</notebook>
+                    <footer>
+                        <button name="action_change_story" string="保存" type="object"
+                            class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+		<record id="zt_review_story_form" model="ir.ui.view">
+            <field name="name">zt.story.review.form</field>
+            <field name="model">zt.story</field>
+            <field name="arch" type="xml">
+                <form string="评审需求">
+                    <group>
+                        <field name="id" invisible="1"/>
+                        <field name="name" readonly="1"/>
+						<field name="reviewed_date"/>
+                        <field name="review_conclusion"/>
+						<field name="assigned_to_id" required="1"/>
+						<field name="reviewed_by_ids" widget="many2many_tags"/>
+                        <field name="remarks" />
+                    </group>
+					<notebook>
+						<page string="受影响的bug">
+							<field name="bug_ids" readonly="1"/>
+						</page>
+						<page string="受影响的测试剧本" readonly="1">
+							<field name="case_ids"/>
+						</page>
+					</notebook>
+                    <footer>
+                        <button name="action_review_story" string="保存" type="object"
+                            class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+		<record id="zt_close_story_form" model="ir.ui.view">
+            <field name="name">zt.close.story.form</field>
+            <field name="model">zt.story</field>
+            <field name="arch" type="xml">
+                <form string="关闭需求">
+                    <group>
+                        <field name="id" invisible="1"/>
+                        <field name="name" readonly="1"/>
+						<field name="close_reason"/>
+                        <field name="remarks" />
+                    </group>
+                    <footer>
+                        <button name="action_close_story" string="保存" type="object"
+                            class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+		<record id="zt_activate_story_form" model="ir.ui.view">
+            <field name="name">zt.activate.story.form</field>
+            <field name="model">zt.story</field>
+            <field name="arch" type="xml">
+                <form string="激活需求">
+                    <group>
+                        <field name="id" invisible="1"/>
+                        <field name="name" readonly="1"/>
+						<field name="assigned_to_id"/>
+                        <field name="remarks" widget="html"/>
+                    </group>
+                    <footer>
+                        <button name="action_activate_story" string="保存" type="object"
+                            class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+		<record id="zt_breakdown_story_form" model="ir.ui.view">
+            <field name="name">zt.breakdown.story.form</field>
+            <field name="model">zt.story</field>
+            <field name="arch" type="xml">
+                <form string="细分需求">
+                    <group>
+                        <field name="id" invisible="1"/>
+                        <field name="name" readonly="1"/>
+						<field name="assigned_to_id"/>
+                        <field name="remarks" widget="html"/>
+                    </group>
+                    <footer>
+                        <button name="action_breakdown_story" string="保存" type="object"
+                            class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+		<record id="zt_story_form" model="ir.ui.view">
+            <field name="name">zt.story.form</field>
+            <field name="model">zt.story</field>
+			<field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form string="需求">
+					<header>
+						<button name="action_open_wizard_form" string="评审需求"
+                        type="object" attrs="{'invisible': [('status', 'in', ['active', 'closed'])]}"
+						context="{'action': 'review', 'name':'评审需求'}"/>
+						<button name="action_open_wizard_form" string="变更需求"
+                        type="object" attrs="{'invisible': [('status', 'in', ['changed','draft', 'closed'])]}"
+						context="{'action': 'change', 'name':'变更需求', 'story_name': name, 'spec': spec, 'verify': verify, 'version': version}"/>
+						<button name="action_open_wizard_form" string="关闭需求"
+                        type="object" attrs="{'invisible': [('status', 'in', ['closed'])]}"
+						context="{'action': 'close', 'name':'关闭需求'}"/>
+						<button name="action_open_wizard_form" string="激活需求"
+                        type="object" attrs="{'invisible': [('status', 'in', ['changed','draft', 'active'])]}"
+						context="{'action': 'activate', 'name':'激活需求'}"/>
+						<button name="action_open_wizard_form" string="细分需求"
+                        type="object" attrs="{'invisible': [('status', 'in', ['closed'])]}"
+						context="{'action': 'breakdown', 'name':'细分需求'}"/>
+						<!--<button name="%(zt_project.zt_review_story_action)d" string="action"-->
+                        <!--type="action" context="{'default_res_id': active_id}" />-->
+						<field name="status" widget="statusbar"/>
+						<!--<field name="stage" widget="statusbar" />  &lt;!&ndash;statusbar_visible="draft,sent,sale" &ndash;&gt;-->
+					</header>
+					<sheet>
+						<div class="oe_title">
+							<!--<h1 class="o_row">-->
+								<!--<field name="pri" widget="priority"/>-->
+								<!--<field name="name" placeholder="需求名称..."/>-->
+							<!--</h1>-->
+							<div class="oe_button_box oe_read_only" name="button_box" >
+								<button type="object" name="action_view_task" class="oe_stat_button"
+									icon="fa-truck" attrs="{'invisible':[('task_count','=',0)]}">
+									<field name="task_count" widget="statinfo" string="task" help="task"/>
+									<field name="task_ids" invisible="1"/>
+								</button>
+								<button type="object"
+									name="action_view_case"	class="oe_stat_button oe_read_only" icon="fa-truck"
+										attrs="{'invisible':[('case_count','=',0)]}">
+									<field name="case_count" widget="statinfo" string="case" help="task"/>
+									<field name="case_ids" invisible="1"/>
+								</button>
+								<button type="object" name="action_view_bug" class="oe_stat_button"
+									icon="fa-truck" attrs="{'invisible':[('bug_count','=',0)]}">
+									<field name="bug_count" widget="statinfo" string="bug" help="bug"/>
+									<field name="bug_ids" invisible="1"/>
+								</button>
+							</div>
+						</div>
+						<group>
+							<group cols="4">
+								<group>
+									<field name="product_id" />
+									<field name="module_id"/>
+									<field name="stage" class="oe_read_only"/>
+									<field name="stage_manual" class="oe_edit_only"/>
+								</group>
+							</group>
+						</group>
+						<group>
+							<group col="4" colspan="1">
+								<field name="plan_id" />
+								<field name="source" />
+							</group>
+						</group>
+						<group>
+							<field name="name"/>
+							<field name="version" invisible="1"/>
+							<field name="spec" widget="html"/>
+							<field name="verify" widget="html"/>
+						</group>
+						<group col="4" colspan="2">
+							<field name="pri" colspan="2"/>
+							<field name="estimate" colspan="2"/>
+						</group>
+						<group col="4" colspan="2">
+							<field name="reviewed_by_id" attrs="{'invisible': [('no_need_review', '=', True)]}"/>
+							<field name="no_need_review"/>
+						</group>
+						<group col="2" colspan="1">
+							<field name="tag_ids" widget="many2many_tags" string="关键字" />
+						</group>
+						<notebook>
+							<page string="需求的一生">
+								<group>
+									<field name="create_uid" readonly='1' string="由谁创建"/>
+									<field name="assigned_to_id"/>
+								</group>
+							</page>
+							<page string="需求版本">
+								<field name="story_history_ids">
+									<tree>
+										<field name="version"/>
+										<field name="name"/>
+										<field name="spec" />
+										<field name="verify"/>
+									</tree>
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="message_ids" widget="mail_thread"/>
+                	</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="zt_story_search" model="ir.ui.view">
+				<field name="name">zt.story.search</field>
+				<field name="model">zt.story</field>
+				<field name="arch" type="xml">
+					<search string="需求">
+						<field name="product_id" />
+						<field name="module_id"/>
+						<field name="plan_id"/>
+						<field name="source"/>
+						<field name="status"/>
+						<field name="stage"/>
+						<field name="pri"/>
+						<field name="estimate"/>
+						<field name="tag_ids"/>
+						<separator/>
+						<filter name="my_story" string="我的需求" domain="[('assigned_to_id','=','uid')]"/>
+					</search>
+				</field>
+		</record>
+        <!--  product plan   -->
+		<record id="zt_product_plan_tree" model="ir.ui.view">
+			<field name="name">zt.product.plan.tree</field>
+			<field name="model">zt.product.plan</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="product_id" />
+					<field name="name"/>
+					<field name="begin"/>
+					<field name="end"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="zt_product_plan_form" model="ir.ui.view">
+			<field name="name">zt.product.plan.form</field>
+			<field name="model">zt.product.plan</field>
+			<field name="arch" type="xml">
+				<form>
+					<sheet>
+						<div class="oe_title">
+							<h1 class="o_row">
+								<field name="name" placeholder="产品开发计划名称..."/>
+							</h1>
+						</div>
+						<group col="4">
+							<field name="begin"/>
+							<field name="end"/>
+						</group>
+						<group col="12">
+							<label string="描述" for="desc" colspan="2"/>
+							<field name="desc" type="html" colspan="10" nolabel="1"/>
+						</group>
+						<notebook>
+							<page string="关联需求">
+								<group col="4">
+									<field name="product_id" />
+									<label string="只有评审过的需求才能关联"/>
+								</group>
+								<field name="story_ids" context="{'search_default_status':'active'}"/>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="zt_product_plan_search" model="ir.ui.view">
+			<field name="name">zt.product.plan.search</field>
+			<field name="model">zt.product.plan</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="product_id" />
+					<field name="name"/>
+				</search>
+			</field>
+		</record>
+
+		<!--  release -->
+		<record id="zt_release_tree" model="ir.ui.view">
+			<field name="name">zt.release.tree</field>
+			<field name="model">zt.release</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="product_id" />
+					<field name="build_id"/>
+					<field name="name"/>
+					<field name="date"/>
+					<field name="status"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="zt_release_form" model="ir.ui.view">
+			<field name="name">zt.release.form</field>
+			<field name="model">zt.release</field>
+			<field name="arch" type="xml">
+				<form>
+					<header>
+						<field name="status" widget="statusbar" />
+					</header>
+					<sheet>
+						<div class="oe_title">
+							<h1 class="o_row">
+								<field name="name" placeholder="发布名称..."/>
+							</h1>
+						</div>
+						<group col="4">
+							<field name="product_id" />
+							<field name="build_id"/>
+							<field name="date"/>
+						</group>
+						<notebook>
+							<page string="需求清单">
+								<field name="story_ids"/>
+							</page>
+							<page string="已解决bug清单">
+								<field name="bug_ids"/>
+							</page>
+							<page string="未解决bug清单">
+								<field name="left_bug_ids"/>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="zt_release_search" model="ir.ui.view">
+			<field name="name">zt.release.search</field>
+			<field name="model">zt.release</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="product_id" />
+					<field name="build_id"/>
+					<field name="name"/>
+					<field name="status"/>
+				</search>
+			</field>
+		</record>
+
+	</data>
+</openerp>

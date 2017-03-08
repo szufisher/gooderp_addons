@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- 测试管理 action -->
+
+        <record id="zt_test_plan_action" model="ir.actions.act_window">
+            <field name="name">测试计划</field>
+            <field name="res_model">zt.test.plan</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                点击创建测试计划
+              </p>
+            </field>
+        </record>
+
+        <record id="zt_case_action" model="ir.actions.act_window">
+            <field name="name">测试剧本</field>
+            <field name="res_model">zt.case</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                点击创建测试剧本
+              </p>
+            </field>
+        </record>
+
+        <record id="zt_test_run_action" model="ir.actions.act_window">
+            <field name="name">测试执行</field>
+            <field name="res_model">zt.test.run</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                点击创建测试执行
+              </p>
+            </field>
+        </record>
+
+        <record id="zt_build_action" model="ir.actions.act_window">
+            <field name="name">产品构建版本</field>
+            <field name="res_model">zt.build</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                点击创建产品构建版本
+              </p>
+            </field>
+        </record>
+        <record id="zt_bug_action" model="ir.actions.act_window">
+            <field name="name">缺陷</field>
+            <field name="res_model">zt.bug</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                点击创建缺陷
+              </p>
+            </field>
+        </record>
+
+	</data>
+</openerp>

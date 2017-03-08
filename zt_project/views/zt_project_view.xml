@@ -1,0 +1,492 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+		<!-- 项目视图  -->
+    	<record id="zt_project_tree" model="ir.ui.view">
+            <field name="name">zt.project.tree</field>
+            <field name="model">zt.project</field>
+            <field name="arch" type="xml">
+                <tree string="项目">
+                    <field name="type"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="po"/>
+					<field name="pm"/>
+                    <field name="qd"/>
+                    <field name="rd"/>
+                    <field name="acl"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="zt_project_form" model="ir.ui.view">
+            <field name="name">zt.project.form</field>
+            <field name="model">zt.project</field>
+            <field name="arch" type="xml">
+                <form string="项目">
+					<header>
+						<field name="status" widget="statusbar" />
+					</header>
+                	<sheet>
+						<div class="oe_title">
+							<h1 class="o_row">
+								<!--<field name="pri" widget="priority"/>-->
+								<field name="name" placeholder="项目名称..."/>
+							</h1>
+						</div>
+						<group>
+						  <group>
+							  <!--<field name="type"/>-->
+							  <field name="code"/>
+							  <field name="begin"/>
+							  <field name="end"/>
+							  <field name="days"/>
+						  </group>
+						   <group>
+								<field name="po"/>
+							   <field name="pm"/>
+								<field name="qd"/>
+								<field name="rd"/>
+							</group>
+						</group>
+						<group>
+							<field name="acl" widget="radio"/>
+							<field name="whitelist" attrs="{'invisible': [('acl', 'in', ['open', 'private'])]}"
+									widget="many2many_tags" string="访问白名单"/>
+						</group>
+						<group>
+							<field name="product_ids" widget="many2many_tags" string="相关产品"/>
+						</group>
+						<notebook>
+							<page name="description_page" string="项目描述">
+								<field name="desc" type="html"/>
+								<div class="oe_clear"/>
+							</page>
+							<page string="团队成员">
+								<field name="member_ids"/>
+							</page>
+							<page string="需求清单">
+								<field name="story_ids"/>
+							</page>
+							<page string="项目任务">
+								<field name="task_ids"/>
+							</page>
+							<page string="其它信息">
+								<group>
+                                    <field name="sequence"/>
+								</group>
+							</page>
+						</notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="message_ids" widget="mail_thread"/>
+                	</div>
+                </form>
+            </field>
+        </record>
+
+		 <record id="zt_project_search" model="ir.ui.view">
+            <field name="name">zt.project.search</field>
+            <field name="model">zt.project</field>
+            <field name="arch" type="xml">
+                <search string="项目">
+					<field name="name"/>
+					<field name="code"/>
+					<field name="po"/>
+					<field name="pm"/>
+					<field name="qd"/>
+					<field name="rd"/>
+					<separator/>
+					<filter name="My Responsible" string="我负责的" domain="['|',('po','=', uid),('qd','=', uid)]"/>
+				</search>
+			</field>
+        </record>
+
+		<!--  任务 -->
+		<record id="zt_task_tree" model="ir.ui.view">
+            <field name="name">zt.task.tree</field>
+            <field name="model">zt.task</field>
+            <field name="arch" type="xml">
+                <tree string="任务">
+					<field name="id" />
+					<field name="pri"/>
+					<field name="name"/>
+					<field name="status"/>
+					<field name="deadline"/>
+					<field name="create_date"  string="创建"/>
+					<field name="assigned_to_id"/>
+					<field name="closed_by_id"/>
+					<field name="closed_date"/>
+					<field name="estimate"/>
+					<field name="consumed"/>
+					<field name="left"/>
+					<field name="story_id"/>
+					<button name ='action_close' type="object"   string="关闭" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="zt_task_form_primary" model="ir.ui.view">
+            <field name="name">zt.task.form.primary</field>
+            <field name="model">zt.task</field>
+			<field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form string="任务">
+					<header class="oe_read_only">
+						<button name="action_open_wizard_form" string="开始" type="object"
+						attrs="{'invisible': [('status', 'in', ['doing','done','pause','cancel','close'])]}"
+						context="{'action': 'start', 'name':'开始'}"/>
+						<button name="action_open_wizard_form" string="工时"   type="object"
+						context="{'action': 'create_effort', 'name':'工时'}" class="oe_read_only"/>
+						<button name="action_open_wizard_form" string="指派" type="object"
+						context="{'action': 'assign', 'name':'指派'}"/>
+						<button name="action_open_wizard_form" string="暂停" type="object"
+						attrs="{'invisible': [('status', 'in', ['wait','pause','cancel','close'])]}"
+						context="{'action': 'pause', 'name':'暂停'}"/>
+						<button name="action_open_wizard_form" string="继续" type="object"
+						attrs="{'invisible': [('status', 'in', ['doing','done','wait','cancel','close'])]}"
+						context="{'action': 'start', 'name':'继续'}"/>
+                        <button name="action_open_wizard_form" string="完成" type="object"
+						attrs="{'invisible': [('status', 'in', ['pause','done','cancel','close'])]}"
+						context="{'action': 'finish', 'name':'完成'}"/>
+						<button name="action_open_wizard_form" string="取消" type="object"
+						attrs="{'invisible': [('status', 'in', ['cancel','close'])]}"
+						context="{'action': 'cancel', 'name':'取消'}"/>
+					</header>
+					<sheet>
+						<group col="12">
+							<group colspan="8">
+								<group colspan="8">
+									<field name="name" placeholder="任务名称..."/>
+									<field name="desc" />
+									<field name="remarks"/>
+								</group>
+								<div class="oe_chatter">
+									<field name="message_follower_ids" widget="mail_followers"/>
+									<field name="message_ids" widget="mail_thread"/>
+								</div>
+							</group>
+							<group colspan="4">
+								<group string="基本信息" colspan="4">
+									<field name="project_id" />
+									<field name="module_id" class="oe_inline"/>
+									<field name="story_id" domain="[('status', '=', 'active')]"  class="oe_inline" colspan="2"/>
+									<button name="action_confirm_story_change" string="确认需求变更"
+											type="object" attrs="{'invisible': [('story_version_changed', '=', False)]}"  colspan="2"/>
+									<field name="story_version_changed" invisible="1" />
+									<field name="assigned_to_id" />
+									<field name="type" />
+									<field name="status" />
+									<field name="pri" />
+									<field name="follower_ids" widget="many2many_tags"/>
+								</group>
+								<group string="工时信息" colspan="4">
+									<field name="est_start"/>
+									<field name="real_start"/>
+									<field name="deadline"/>
+									<field name="estimate"/>
+									<field name="consumed"/>
+									<field name="left"/>
+									<field name="tag_ids" widget="many2many_tags" string="关键字" />
+								</group>
+								<group string="任务的一生" colspan="4">
+									<field name="create_uid" string="由谁创建"/>
+									<field name="finished_by_id"/>
+									<field name="finished_date"/>
+									<field name="cancelled_by_id"/>
+									<field name="cancelled_date"/>
+									<field name="closed_by_id"/>
+									<field name="closed_date"/>
+									<field name="closed_reason"/>
+								</group>
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="zt_task_form" model="ir.ui.view">
+            <field name="name">zt.task.form</field>
+            <field name="model">zt.task</field>
+            <field name="arch" type="xml">
+                <form string="任务">
+					<header>
+						<button name="action_open_wizard_form" string="开始" type="object"
+						attrs="{'invisible': [('status', 'in', ['doing','done','pause','cancel','close'])]}"
+						context="{'action': 'start', 'name':'开始'}"/>
+						<button name="action_open_wizard_form" string="工时"   type="object"
+						context="{'action': 'create_effort', 'name':'工时'}"/>
+						<button name="action_open_wizard_form" string="指派" type="object"
+						context="{'action': 'assign', 'name':'指派'}"/>
+						<button name="action_open_wizard_form" string="暂停" type="object"
+						attrs="{'invisible': [('status', 'in', ['wait','done','pause','cancel','close'])]}"
+						context="{'action': 'pause', 'name':'暂停'}"/>
+						<button name="action_open_wizard_form" string="继续" type="object"
+						attrs="{'invisible': [('status', 'in', ['doing','done','wait','cancel','close'])]}"
+						context="{'action': 'start', 'name':'继续'}"/>
+                        <button name="action_open_wizard_form" string="完成" type="object"
+						attrs="{'invisible': [('status', 'in', ['wait','pause','cancel','close'])]}"
+						context="{'action': 'finish', 'name':'完成'}"/>
+						<button name="action_open_wizard_form" string="取消" type="object"
+						attrs="{'invisible': [('status', 'in', ['doing','pause','cancel','close'])]}"
+						context="{'action': 'cancel', 'name':'取消'}"/>
+						<button name="action_confirm_story_change" string="确认需求变更"
+                        		type="object" attrs="{'invisible': [('story_version_changed', '=', False)]}"/>
+						<field name="status" widget="statusbar" />
+					</header>
+					<sheet>
+						<div class="oe_title">
+							<h1 class="o_row">
+								<field name="pri" widget="priority"/>
+								<field name="name" placeholder="任务名称..."/>
+							</h1>
+						</div>
+						<group col="4">
+							<field name="module_id"/>
+							<field name="story_id" domain="[('status', '=', 'active')]"/>
+							<field name="story_version_changed" invisible="1"/>
+							<field name="type"/>
+							<field name="assigned_to_id"/>
+							<field name="estimate"/>
+							<field name="deadline"/>
+							<field name="tag_ids" widget="many2many_tags" string="关键字" />
+						</group>
+						<notebook>
+							<page name="description_page" string="任务描述">
+								<field name="desc" type="html"/>
+								<div class="oe_clear"/>
+							</page>
+							<page string="任务的一生">
+								<group>
+									<field name="create_uid" string="由谁创建"/>
+									<field name="closed_by_id"/>
+									<field name="closed_date"/>
+									<!--<field name="assigned_to_id"/> -->
+								</group>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="zt_start_task_form" model="ir.ui.view">
+            <field name="name">zt.start.task.form</field>
+            <field name="model">zt.task</field>
+            <field name="arch" type="xml">
+                <form string="开始">
+                    <group>
+                        <field name="id" invisible="1"/>
+                        <field name="name" readonly="1"/>
+                        <field name="real_start"/>
+                        <field name="consumed"/>
+                        <field name="left"/>
+                        <field name="remarks"/>
+                    </group>
+                    <footer>
+                        <button name="action_wizard" string="保存" type="object"
+                            class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+		<record id="zt_assign_task_form" model="ir.ui.view">
+            <field name="name">zt.assign.task.form</field>
+            <field name="model">zt.task</field>
+            <field name="arch" type="xml">
+                <form string="指派">
+                    <group>
+                        <field name="id" invisible="1"/>
+                        <field name="name" readonly="1"/>
+                        <field name="assigned_to_id"/>
+                        <field name="left"/>
+                        <field name="remarks"/>
+                    </group>
+                    <footer>
+                        <button name="action_wizard" string="保存" type="object"
+                            class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+		<record id="zt_finish_task_form" model="ir.ui.view">
+            <field name="name">zt.finish.task.form</field>
+            <field name="model">zt.task</field>
+            <field name="arch" type="xml">
+                <form string="完成">
+                    <group>
+                        <field name="id" invisible="1"/>
+                        <field name="name" readonly="1"/>
+                        <field name="consumed"/>
+						<field name="assigned_to_id"/>
+						<field name="finished_date"/>
+                        <field name="remarks"/>
+                    </group>
+                    <footer>
+                        <button name="action_wizard" string="保存" type="object"
+                            class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+		<record id="zt_pause_task_form" model="ir.ui.view">
+            <field name="name">zt.pause.task.form</field>
+            <field name="model">zt.task</field>
+            <field name="arch" type="xml">
+                <form string="暂停">
+                    <group>
+                        <field name="id" invisible="1"/>
+                        <field name="name" readonly="1"/>
+                        <field name="remarks"/>
+                    </group>
+                    <footer>
+                        <button name="action_wizard" string="保存" type="object"
+                            class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+		<record id="zt_cancel_task_form" model="ir.ui.view">
+            <field name="name">zt.cancel.task.form</field>
+            <field name="model">zt.task</field>
+            <field name="arch" type="xml">
+                <form string="取消">
+                    <group>
+                        <field name="id" invisible="1"/>
+                        <field name="name" readonly="1"/>
+                        <field name="remarks"/>
+                    </group>
+                    <footer>
+                        <button name="action_wizard" string="保存" type="object"
+                            class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+		<record id="zt_task_search" model="ir.ui.view">
+				<field name="name">zt.task.search</field>
+				<field name="model">zt.task</field>
+				<field name="arch" type="xml">
+					<search string="任务">
+						<field name="module_id"/>
+						<field name="name"/>
+						<field name="status"/>
+						<field name="pri"/>
+						<field name="estimate"/>
+						<field name="tag_ids"/>
+						<separator/>
+						<filter name="my_task" string="我的需求" domain="[('assigned_to_id','=','uid')]"/>
+					</search>
+				</field>
+		</record>
+        <!--  team   -->
+		<record id="zt_team_tree" model="ir.ui.view">
+			<field name="name">zt.team.tree</field>
+			<field name="model">zt.team</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="project_id" />
+					<field name="user_id"/>
+					<field name="role"/>
+					<field name="join"/>
+					<field name="days"/>
+					<field name="hours"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="zt_team_form" model="ir.ui.view">
+			<field name="name">zt.team.form</field>
+			<field name="model">zt.team</field>
+			<field name="arch" type="xml">
+				<form>
+					<sheet>
+						<group>
+							<field name="project_id" />
+							<field name="user_id"/>
+							<field name="role"/>
+							<field name="join"/>
+							<field name="days"/>
+							<field name="hours"/>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="zt_team_search" model="ir.ui.view">
+			<field name="name">zt.team.search</field>
+			<field name="model">zt.team</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="project_id" />
+					<field name="user_id"/>
+					<field name="role"/>
+				</search>
+			</field>
+		</record>
+
+		<!--  release -->
+		<record id="zt_effort_tree" model="ir.ui.view">
+			<field name="name">zt.effort.tree</field>
+			<field name="model">zt.effort</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="user_id" />
+					<field name="date"/>
+					<field name="begin"/>
+					<field name="end"/>
+					<field name="desc"/>
+					<field name="name"/>
+					<field name="type"/>
+					<field name="status"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="zt_effort_form" model="ir.ui.view">
+			<field name="name">zt.effort.form</field>
+			<field name="model">zt.effort</field>
+			<field name="arch" type="xml">
+				<form>
+					<sheet>
+						<group>
+							<field name="user_id" />
+							<field name="date"/>
+							<field name="begin"/>
+							<field name="end"/>
+							<field name="desc"/>
+							<field name="name"/>
+							<field name="type"/>
+							<field name="status"/>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="zt_effort_search" model="ir.ui.view">
+			<field name="name">zt.effort.search</field>
+			<field name="model">zt.effort</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="name" />
+					<field name="desc"/>
+				</search>
+			</field>
+		</record>
+
+	</data>
+</openerp>

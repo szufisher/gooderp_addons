@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- 产品管理 action -->
+        <record id="zt_product_action" model="ir.actions.act_window">
+            <field name="name">产品</field>
+            <field name="res_model">zt.product</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                  <b>点击创建产品</b>
+                  <br/>
+                  产品管理对于公司来讲，至关重要。只有做出好的产品或者服务出来，才能赢得市场，谋求发展和生存。
+                  所以产品经理的这个位子对于公司来讲，是非常关键的，相当于公司的大脑，在决定着公司前进的方向。在禅道里面，
+                  产品和项目这两个概念被明确的区分开来。产品是需求方，决定做什么。项目是执行方，解决的是如何做的问题。
+                  而测试则是保障方，解决的是正确的做事情的问题。
+                  所以在禅道中，所有的一切都是围绕产品展开的。产品是整个项目管理活动的核心。
+              </p>
+            </field>
+        </record>
+
+        <record id="zt_module_action" model="ir.actions.act_window">
+            <field name="name">产品模块</field>
+            <field name="res_model">zt.module</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                点击创建产品模块
+                模块相当于对产品需求的一个分类，通过组织模块，可以让大家对产品有一个宏观的把握和认识，也方便对需求进行分类和整理。
+              </p>
+            </field>
+        </record>
+
+        <record id="zt_story_action" model="ir.actions.act_window">
+            <field name="name">需求</field>
+            <field name="res_model">zt.story</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                点击创建需求
+              </p>
+            </field>
+        </record>
+
+        <record id="zt_product_plan_action" model="ir.actions.act_window">
+            <field name="name">产品发布计划</field>
+            <field name="res_model">zt.product.plan</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                <b>建立发布计划</b>
+                <br/>
+                古人云，凡事预则立，不预则废。产品需要做规划，才能有轻重缓急，才能正确的做事。因此对于产品经理而言，计划是必需的。
+                •对于产品经理自己而言，发布计划可以帮助他规划产品，制定发布的节奏，调整需求的优先级。
+                •对于公司其他部门的同事以及外部的客户而言，发布计划可以让他们知晓产品的进展情况，以便做好相应的安排。
+                •同时在项目关联需求的时候，计划可以帮助需求的关联。
+              </p>
+            </field>
+        </record>
+
+		<record id="zt_release_action" model="ir.actions.act_window">
+            <field name="name">产品发布</field>
+            <field name="res_model">zt.release</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                <b>点击创建发布</b>
+                项目结束后产品人员的一个工作就是创建发布，通过创建发布，可以告诉公司其他相关的部门，他们可以在新版本产品的基础上开展工作。同时也是鼓舞团队士气非常好的一个手段。
+                创建发布有两个前提：
+                1.该产品有关联过项目。
+                2.该项目有创建过版本。
+              </p>
+            </field>
+        </record>
+	</data>
+</openerp>

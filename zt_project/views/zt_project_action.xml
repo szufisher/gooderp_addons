@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- 项目管理 action -->
+
+        <record id="zt_project_action" model="ir.actions.act_window">
+            <field name="name">项目</field>
+            <field name="res_model">zt.project</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                点击创建项目
+              </p>
+            </field>
+        </record>
+
+        <record id="zt_task_action" model="ir.actions.act_window">
+            <field name="name">任务</field>
+            <field name="res_model">zt.task</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                点击创建任务
+              </p>
+            </field>
+        </record>
+
+        <record id="zt_team_action" model="ir.actions.act_window">
+            <field name="name">项目团队</field>
+            <field name="res_model">zt.team</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                点击创建项目团队
+              </p>
+            </field>
+        </record>
+
+        <record id="zt_effort_action" model="ir.actions.act_window">
+            <field name="name">记录实际工时</field>
+            <field name="res_model">zt.effort</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                点击记录实际工时
+              </p>
+            </field>
+        </record>
+	</data>
+</openerp>

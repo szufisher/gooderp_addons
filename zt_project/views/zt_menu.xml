@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+    	<!-- 根菜单 -->
+        <menuitem id="menu_zt_project_root" name="项目管理"  />
+
+        <menuitem id="menu_product_manage" name="产品管理" parent="menu_zt_project_root" sequence="1"/>
+
+
+        <menuitem id="menu_zt_product" name='产品' action="zt_product_action"
+            parent="menu_product_manage" sequence="1"
+            />
+        <menuitem id="menu_zt_module" name='产品模块' action="zt_module_action"
+            parent="menu_product_manage" sequence="2"/>
+        <menuitem id="menu_zt_story" name='需求' action="zt_story_action"
+            parent="menu_product_manage" sequence="3"/>
+        <menuitem id="menu_product_plan" name='发布计划' action="zt_product_plan_action"
+            parent="menu_product_manage" sequence="4"
+            />
+        <menuitem id="menu_release" name='发布' action="zt_release_action"
+            parent="menu_product_manage" sequence="5"
+            />
+
+        <menuitem id="menu_zt_project_manage" name="项目管理" parent="menu_zt_project_root" sequence="2"/>
+
+        <menuitem id="menu_zt_projectt" name='项目' action="zt_project_action"
+            parent="menu_zt_project_manage" sequence="1"
+            />
+        <menuitem id="menu_zt_task" name='任务' action="zt_task_action"
+            parent="menu_zt_project_manage" sequence="2"
+            />
+        <menuitem id="menu_zt_team" name='项目团队' action="zt_team_action"
+            parent="menu_zt_project_manage" sequence="3"
+            />
+        <menuitem id="menu_zt_effort" name='实际工时' action="zt_effort_action"
+            parent="menu_zt_project_manage" sequence="4"
+            />
+
+        <menuitem id="menu_zt_test_manage" name="测试管理" parent="menu_zt_project_root" sequence="3"/>
+
+        <menuitem id="menu_zt_test_plan" name='测试计划' action="zt_test_plan_action"
+            parent="menu_zt_test_manage" sequence="1"
+            />
+        <menuitem id="menu_zt_case" name='测试剧本' action="zt_case_action"
+            parent="menu_zt_test_manage" sequence="2"
+            />
+        <menuitem id="menu_zt_test_run" name='测试执行' action="zt_test_run_action"
+            parent="menu_zt_test_manage" sequence="3"
+            />
+        <menuitem id="menu_zt_bug" name='缺陷' action="zt_bug_action"
+            parent="menu_zt_test_manage" sequence="4"  />
+	</data>
+</openerp>
