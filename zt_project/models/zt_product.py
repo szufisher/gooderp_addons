@@ -63,7 +63,7 @@ class ZtProduct(models.Model):
 	plan_ids = fields.One2many('zt.product.plan', 'product_id', string=u'发布计划')
 	release_ids = fields.One2many('zt.release', 'product_id', string=u'发布')
 
-	@api.mult
+	@api.multi
 	def action_view_story(self):
 		self.ensure_one()
 		if self.story_count == 0:
